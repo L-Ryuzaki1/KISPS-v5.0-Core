@@ -1,0 +1,82 @@
+import numpy as np
+
+class QuantumBehavioralEngine:
+    def __init__(self, discipline: float, w_resonance: float):
+        """
+        Инициализация ядра индивидуальной траектории.
+        :param discipline: Параметр D из Психометрического Профиля (0 to 100)
+        :param w_resonance: Врожденный квантовый профиль реальности (W_resonance)
+        """
+        self.discipline = discipline
+        self.w_resonance = w_resonance
+        
+    def generate_quantum_shift(self, mock_qrng_val: float = None) -> float:
+        """
+        [ГЛАВА 3.2] Извлечение истинной случайности из флуктуаций вакуума.
+        Симулирует или обрабатывает аппаратный сигнал ANU QRNG.
+        """
+        q_val = mock_qrng_val if mock_qrng_val is not None else np.random.rand()
+        delta_q = (q_val - 0.5) * 2.0  # Интервал [-1.0; +1.0]
+        return delta_q
+
+    def calculate_cns_step(self, cns_wear_prev: float, delta_q: float, t: int) -> float:
+        """
+        [ГЛАВА 3.2] Расчет прироста износа ЦНС по асимметричной формуле Гомпертца-Мейкхама.
+        """
+        # Динамический коэффициент энтропии времени
+        e_time = 1.0 + (t * 0.08)
+        
+        # Асимметричный шаг нагрузки / восстановления
+        if delta_q > 0:
+            delta_cns = delta_q * 24.0 * self.w_resonance * e_time
+        else:
+            delta_cns = delta_q * 18.0 * self.w_resonance * e_time
+            
+        # Коэффициент интенсивности нарастания хаоса (замедляется Дисциплиной D)
+        gamma = 0.12 * (1.5 - (self.discipline / 100.0))
+        
+        # Накопление износа модулируется экспонентой Гомпертца
+        cns_wear_new = cns_wear_prev + delta_cns * np.exp(gamma * t)
+        return max(0.0, min(100.0, cns_wear_new))
+
+    def evaluate_sigmoid_success(self, focus_prev: float, cns_wear: float, s_pressure: float, delta_q: float) -> tuple:
+        """
+        [ГЛАВА 3.3] Расчет Квантового Бунта и логистической кривой успеха.
+        """
+        # Расход фокуса под внешним давлением среды S
+        # Переводим delta_q обратно в диапазон [0, 1] для симуляции q_val
+        q_val = (delta_q / 2.0) + 0.5
+        focus_new = focus_prev - q_val * (8.0 + s_pressure * 0.1)
+        focus_new = max(50.0, min(150.0, focus_new))
+        
+        # Координата X когнитивного баланса
+        x = (focus_new - cns_wear) / 20.0
+        
+        # Вероятность удержания траектории успеха (Сигмоида)
+        p_success = 1.0 / (1.0 + np.exp(-x))
+        success_value = p_success * 100.0  # Процентный эквивалент
+        
+        return success_value, focus_new
+
+    def simulate_sandbox_sleep(self, cns_wear: float, b_start: float, tau_hours: float = 8.0) -> dict:
+        """
+        [ГЛАВА 6.2] Симуляция ординарного сна в изолированной "песочнице".
+        Дефрагментация кэша нейросетевых логов мозга.
+        """
+        lambda_param = 0.35
+        regeneration_efficiency = 1.0 - (cns_wear / 100.0)
+        
+        # Экспоненциальное затухание информационного хаоса в кэше
+        b_cache_end = b_start * np.exp(-lambda_param * regeneration_efficiency * tau_hours)
+        
+        # Влияние дефрагментации на физический откат износа ЦНС
+        delta_cns = 25.0 * regeneration_efficiency * (1.0 - (b_cache_end / (b_start + 1e-9)))
+        cns_wear_end = max(0.0, cns_wear - delta_cns)
+        
+        status = "Successful Defragmentation" if (cns_wear < 90.0 and b_cache_end / (b_start + 1e-9) <= 0.5) else "Sandbox Overflow"
+        
+        return {
+            "b_cache_final": round(b_cache_end, 2),
+            "cns_wear_final": round(cns_wear_end, 2),
+            "status": status
+        }
