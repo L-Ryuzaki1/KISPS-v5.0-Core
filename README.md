@@ -34,4 +34,4 @@ success_rate, focus_left = engine.evaluate_sigmoid_success(focus_prev=100.0, cns
 ## 🛡 Лицензия
 Проект распространяется под открытой лицензией **MIT License**. Вы можете использовать вычислительное ядро со ссылкой на автора.
 
-**Разработчик:** @L__Ryuzaki1 (Хабр )
+**Разработчик:** id6112021 (L Ryuzaki1) (vc.ru)
